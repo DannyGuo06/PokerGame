@@ -25,9 +25,21 @@ func startServer(numPlayers int) {
         connections = append(connections, conn)
         fmt.Println("player", i+1, "connected")
     }
-
+	msg := readMessage(connections[0])
+	fmt.Println("player 1 said:", msg)
     for _, conn := range connections {
         conn.Close()
     }
     listener.Close()
+}
+
+func readMessage(conn net.Conn) string {
+    buffer := make([]byte, 1024)
+    n, err := conn.Read(buffer)
+    if err != nil {
+        fmt.Println("something went wrong:", err)
+        return "disconnected"
+    }
+    message := string(buffer[:n])
+    return message
 }
